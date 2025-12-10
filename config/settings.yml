@@ -5,3 +5,4 @@ plugins:
   vip_color_field_id:
     default: 6
     min: 1
+    description: "6"
