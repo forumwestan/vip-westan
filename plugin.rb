@@ -1,34 +1,48 @@
 # name: discourse-vip-color
-# about: Adiciona classe CSS de cor baseada em User Field para VIPs
-# version: 1.1
-# authors: Gemini
-# url: https://github.com/SEU-USUARIO/discourse-vip-color
-# required_version: 2.7.0
+# about: Adiciona cor ao nick apenas se o usuario for do grupo VIP e tiver o campo preenchido
+# version: 2.0
+# authors: Westan
+# url: https://github.com/forumwestan/vip-color
 
 enabled_site_setting :vip_color_enabled
 
 after_initialize do
-  # Função segura para extrair a cor
-  # O Discourse armazena user_fields como um Hash onde as chaves são Strings
-  get_vip_color = Proc.new do |user|
-    if user && user.user_fields
-      field_id = SiteSetting.vip_color_field_id.to_s
-      color = user.user_fields[field_id]
-      # Retorna a cor apenas se não for nula e não estiver em branco
-      color.present? ? color : nil
+  # CONFIGURAÇÃO: ID do campo e Nome do Grupo
+  def get_field_id
+    SiteSetting.vip_color_field_id.to_s
+  end
+
+  def get_vip_group_name
+    "vip" # Nome exato do grupo (slug)
+  end
+
+  # Lógica principal
+  get_vip_data = Proc.new do |user|
+    # 1. Verifica se o usuário existe
+    next nil unless user
+
+    # 2. Verifica se o usuário pertence ao grupo VIP
+    # Isso evita que ex-vips continuem com a cor
+    is_vip = user.groups.any? { |g| g.name == get_vip_group_name }
+    
+    if is_vip && user.user_fields
+      color = user.user_fields[get_field_id]
+      
+      # 3. Retorna a cor em MINÚSCULO (Downcase) para facilitar o CSS
+      # Ex: "Red" vira "red", "Areia" vira "areia"
+      color.present? ? color.downcase : nil
     else
       nil
     end
   end
 
-  # Adiciona a cor ao serializador do POST (para aparecer nos tópicos)
+  # Envia o dado para o Post (Tópicos)
   add_to_serializer(:post, :user_vip_color) do
-    # object.user pode ser nil se o usuário foi deletado
-    get_vip_color.call(object.user)
+    get_vip_data.call(object.user)
   end
 
-  # Adiciona a cor ao serializador do UserCard (clique no avatar)
+  # Envia o dado para o User Card (Avatar clicado)
   add_to_serializer(:user_card, :user_vip_color) do
-    get_vip_color.call(object)
+    get_vip_data.call(object)
   end
 end
