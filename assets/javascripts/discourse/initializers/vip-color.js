@@ -42,7 +42,7 @@ export default apiInitializer("1.0", (api) => {
 });
 
 export default apiInitializer("1.0", (api) => {
-  console.log("🚀 Plugin VIP Color: Inicializado!");
+  console.log("Plugin VIP Color: Inicializado!");
 
   if (api.addTrackedPostProperties) {
     api.addTrackedPostProperties("user_vip_color");
@@ -54,7 +54,7 @@ export default apiInitializer("1.0", (api) => {
       if (context.post && context.post.user_vip_color) {
         
         // LOG PARA DEBUG: Isso vai aparecer no seu console (F12)
-        console.log(`🎨 Cor encontrada para user ${context.post.username}:`, context.post.user_vip_color);
+        console.log(`Cor encontrada para user ${context.post.username}:`, context.post.user_vip_color);
 
         const safeColor = context.post.user_vip_color.replace(/[^a-zA-Z0-9-_]/g, "");
         if (safeColor) {
