@@ -1,0 +1,7 @@
+plugins:
+  vip_color_enabled:
+    default: true
+    client: true
+  vip_color_field_id:
+    default: 6
+    min: 1
