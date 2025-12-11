@@ -1,4 +1,4 @@
-# name: discourse-vip-color
+# name: vip-westan
 # about: Adiciona cor ao nick apenas se o usuario for do grupo VIP e tiver o campo preenchido
 # version: 2.1
 # authors: Westan
